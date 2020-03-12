@@ -50,6 +50,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -702,16 +703,22 @@ public class SearchActivity extends Activity
         final Resources resources = getResources();
         final View masterLayout = findViewById(R.id.masterLayout);
         final View appContainer = findViewById(R.id.appsContainer);
+        final View actionBar = findViewById(R.id.customActionBar);
         final int appTop = resources.getDimensionPixelSize(R.dimen.activity_vertical_margin);
         final boolean noMultiWindow = Build.VERSION.SDK_INT < Build.VERSION_CODES.N ||
                 !isInMultiWindowMode();
         final boolean transparentPossible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
+        final int actionbar_margin = (int) getResources().getDimension(R.dimen.actionbar_top_margin);
+        final int actionbar_height = (int) getResources().getDimension(R.dimen.actionbar_height);
+        final int actionbar_top_margin = getDimensionSize(resources, "status_bar_height") + actionbar_margin;
+        final int navBarHeight = getNavigationBarHeight(resources);
+
+
+
         if (transparentPossible && noMultiWindow) {
             masterLayout.setFitsSystemWindows(false);
             final int navBarWidth = getNavigationBarWidth(resources);
-            final int searchUpperPadding = getDimensionSize(resources, "status_bar_height");
-            final int navBarHeight = getNavigationBarHeight(resources);
             final SharedLauncherPrefs prefs = new SharedLauncherPrefs(this);
             final int orientation = getWindowManager().getDefaultDisplay().getRotation();
             int leftPadding = 0;
@@ -732,13 +739,18 @@ public class SearchActivity extends Activity
             }
 
             // If the navigation bar is on the side, don't put apps under it.
-            masterLayout.setPadding(leftPadding, searchUpperPadding, rightPadding, 0);
-
             // If the navigation bar is at the bottom, stop the icons above it.
-            appContainer.setPadding(0, appTop, 0, navBarHeight);
+            masterLayout.setPadding(leftPadding, 0, rightPadding, 0);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) actionBar.getLayoutParams();
+            params.setMargins(0, actionbar_top_margin, 0,0);
+            appContainer.setPadding(0, actionbar_top_margin + actionbar_height + actionbar_margin*2, 0, navBarHeight); // appTop + searchUpperPadding+100
+
+
         } else {
             masterLayout.setFitsSystemWindows(true);
-            appContainer.setPadding(0, appTop, 0, 0);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) actionBar.getLayoutParams();
+            params.setMargins(0, 0, 0,0);
+            appContainer.setPadding(0,  actionbar_height + actionbar_margin*2, 0, navBarHeight); // appTop + searchUpperPadding+100
         }
     }
 
