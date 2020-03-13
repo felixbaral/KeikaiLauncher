@@ -702,7 +702,7 @@ public class SearchActivity extends Activity
     private void setupPadding() {
         final Resources resources = getResources();
         final View masterLayout = findViewById(R.id.masterLayout);
-        final View appContainer = findViewById(R.id.appsContainer);
+        final GridView appContainer = (GridView) findViewById(R.id.appsContainer);
         final View actionBar = findViewById(R.id.customActionBar);
         final int appTop = resources.getDimensionPixelSize(R.dimen.activity_vertical_margin);
         final boolean noMultiWindow = Build.VERSION.SDK_INT < Build.VERSION_CODES.N ||
@@ -711,15 +711,18 @@ public class SearchActivity extends Activity
 
         final int actionbar_margin = (int) getResources().getDimension(R.dimen.actionbar_top_margin);
         final int actionbar_height = (int) getResources().getDimension(R.dimen.actionbar_height);
-        final int actionbar_top_margin = getDimensionSize(resources, "status_bar_height") + actionbar_margin;
+        final int status_bar_height = getDimensionSize(resources, "status_bar_height");
+        final int actionbar_top_margin = status_bar_height + actionbar_margin;
         final int navBarHeight = getNavigationBarHeight(resources);
+        final int height = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-
+        final SharedLauncherPrefs prefs = new SharedLauncherPrefs(this);
+        final boolean on_bottom = prefs.isSearchBarOnBottom();
+        appContainer.setStackFromBottom(on_bottom);
 
         if (transparentPossible && noMultiWindow) {
             masterLayout.setFitsSystemWindows(false);
             final int navBarWidth = getNavigationBarWidth(resources);
-            final SharedLauncherPrefs prefs = new SharedLauncherPrefs(this);
             final int orientation = getWindowManager().getDefaultDisplay().getRotation();
             int leftPadding = 0;
             int rightPadding = 0;
@@ -738,12 +741,23 @@ public class SearchActivity extends Activity
                 }
             }
 
+            int app_top = actionbar_top_margin + actionbar_height + actionbar_margin*2;
+            int app_bottom = navBarHeight;
+            int actionbar_top = actionbar_top_margin;
+            if (on_bottom) {
+                app_top = status_bar_height + actionbar_top_margin;
+                actionbar_top = height - actionbar_height;
+                app_bottom += actionbar_height + actionbar_margin * 2;
+            }
+
             // If the navigation bar is on the side, don't put apps under it.
             // If the navigation bar is at the bottom, stop the icons above it.
             masterLayout.setPadding(leftPadding, 0, rightPadding, 0);
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) actionBar.getLayoutParams();
-            params.setMargins(0, actionbar_top_margin, 0,0);
-            appContainer.setPadding(0, actionbar_top_margin + actionbar_height + actionbar_margin*2, 0, navBarHeight); // appTop + searchUpperPadding+100
+            params.setMargins(0, actionbar_top, 0,0);
+
+
+            appContainer.setPadding(0, app_top, 0, app_bottom); // appTop + searchUpperPadding+100
 
 
         } else {
