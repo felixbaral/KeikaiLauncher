@@ -18,6 +18,7 @@
   ~ overwritten. See SearchActivity.java#setupPadding().
   -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/masterLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,8 +39,11 @@
         android:overScrollMode="never"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:scrollbars="none"
+        android:stackFromBottom="true"
         android:stretchMode="spacingWidth"
-        android:verticalSpacing="@dimen/app_row_vertical_spacing" />
+        android:verticalSpacing="@dimen/app_row_vertical_spacing" >
+
+    </GridView>
 
     <!--
       ~ Bug:
@@ -55,20 +59,13 @@
       ~ This could also be fixed by not allowing scrolling under the navigation bar; I
       ~ consider disabling overscroll to be the better compromise.
     -->
+
     <LinearLayout
         android:id="@+id/customActionBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/actionbar_height"
+        android:layout_gravity="top"
         android:background="@drawable/search_box_bg">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:contentDescription="@string/search_icon"
-            android:padding="@dimen/actionbar_icon_padding"
-            android:src="@drawable/ic_search_black_24dp"
-            android:tint="@color/hint_grey" />
 
         <EditText
             android:id="@+id/user_search_input"
@@ -78,7 +75,6 @@
             android:background="@null"
             android:ellipsize="end"
             android:hint="@string/search_view_hint"
-            android:imeActionId="@+id/actionGo"
             android:imeActionLabel="@string/launch"
             android:imeOptions="actionGo"
             android:inputType="text"
@@ -87,6 +83,15 @@
             android:textColor="@android:color/black"
             android:textColorHint="@color/text_hint_grey"
             android:textSize="18sp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:contentDescription="@string/search_icon"
+            android:padding="@dimen/actionbar_icon_padding"
+            android:src="@drawable/ic_search_black_24dp"
+            android:tint="@color/hint_grey" />
 
         <ImageButton
             android:id="@+id/clear_button"
@@ -118,4 +123,5 @@
             android:layout_width="0dp"
             android:layout_height="0dp" />
     </LinearLayout>
+
 </FrameLayout>
