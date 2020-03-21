@@ -299,17 +299,14 @@ public class SearchActivity extends Activity
 
         hideKeyboard();
         try {
+            // this is where an APP is actually started
             startActivity(launchableActivity.getLaunchIntent());
             mSearchEditText.setText(null);
             launchableActivity.setLaunchTime();
             launchableActivity.addUsage();
             launchableprefs.writePreference(launchableActivity);
 
-            if (sharedPrefs.isOrderedByRecent()) {
-                mAdapter.sort(LaunchableAdapter.RECENT);
-            } else if (sharedPrefs.isOrderedByUsage()) {
-                mAdapter.sort(LaunchableAdapter.USAGE);
-            }
+            mAdapter.sortApps(this);
         } catch (final ActivityNotFoundException e) {
             if (BuildConfig.DEBUG) {
                 throw e;
