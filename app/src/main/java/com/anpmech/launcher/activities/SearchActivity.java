@@ -459,11 +459,9 @@ public class SearchActivity extends Activity
         final SharedLauncherPrefs prefs = new SharedLauncherPrefs(this);
         final boolean on_bottom = prefs.isSearchBarOnBottom();
 
-        // TODO: sometimes the view scrolls to the beginning to reset the app into the initial state, this needs to respect the search bar position
-        // final int wantY = on_bottom ?  : 0;
-        final int[] loc = {0, 0};
-        view.getLocationInWindow(loc);
-        if (loc[1] != 0) { // wantY
+        if (on_bottom) {
+            view.smoothScrollToPosition(view.getHeight());
+        } else {
             view.smoothScrollToPosition(0);
         }
     }
