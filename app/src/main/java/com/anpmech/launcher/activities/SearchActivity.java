@@ -708,9 +708,8 @@ public class SearchActivity extends Activity
         final Resources resources = getResources();
         final View masterLayout = findViewById(R.id.masterLayout);
         final LinearLayout actionBar = findViewById(R.id.customActionBar);
-        final GridView appContainer = (GridView) findViewById(R.id.appsContainer);
+        final GridView appContainer = findViewById(R.id.appsContainer);
 
-        final int appTop = resources.getDimensionPixelSize(R.dimen.activity_vertical_margin);
         final boolean noMultiWindow = Build.VERSION.SDK_INT < Build.VERSION_CODES.N ||
                 !isInMultiWindowMode();
         final boolean transparentPossible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
@@ -719,7 +718,6 @@ public class SearchActivity extends Activity
         final int actionbar_height = (int) getResources().getDimension(R.dimen.actionbar_height);
         int status_bar_height = getDimensionSize(resources, "status_bar_height");
         int navBarHeight = getNavigationBarHeight(resources);
-        final int height = Resources.getSystem().getDisplayMetrics().heightPixels;
 
         final boolean on_bottom = prefs.isSearchBarOnBottom();
         appContainer.setStackFromBottom(on_bottom);
@@ -758,6 +756,13 @@ public class SearchActivity extends Activity
                     leftPadding = navBarWidth;
                 }
             }
+
+            // when the actionBar is on the bottom and the keyboard comes up and moves the input
+            // field up, the input field needs extra padding on the bottom so that the keyboards
+            // does not overlay with the actionBar
+            final TextView userSearchInput = findViewById(R.id.user_search_input);
+            final float padding = (actionbar_height-userSearchInput.getTextSize());
+            userSearchInput.setPadding(0,(int)(padding*0.55),0,(int)(padding*0.45));
 
             // If the navigation bar is on the side, don't put apps under it.
             // If the navigation bar is at the bottom, stop the icons above it.
