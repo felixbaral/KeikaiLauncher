@@ -731,59 +731,56 @@ public class SearchActivity extends Activity
             actionBarParams.gravity = Gravity.TOP;
         }
 
+        // e.g. split screen
         if (!(transparentPossible && noMultiWindow)) {
             masterLayout.setFitsSystemWindows(true);
-            status_bar_height = 0;
-            navBarHeight = 0;
         }
-        {
-            //##masterLayout.setFitsSystemWindows(false);
-            final int navBarWidth = getNavigationBarWidth(resources);
-            final int orientation = getWindowManager().getDefaultDisplay().getRotation();
 
-            int leftPadding = 0;
-            int rightPadding = 0;
-            if (orientation == Surface.ROTATION_90) {
-                if ("right".equals(prefs.get90NavBarPosition())) {
-                    rightPadding = navBarWidth;
-                } else if ("left".equals(prefs.get90NavBarPosition())) {
-                    leftPadding = navBarWidth;
-                }
-            } else if (orientation == Surface.ROTATION_270) {
-                if ("right".equals(prefs.get270NavBarPosition())) {
-                    rightPadding = navBarWidth;
-                } else if ("left".equals(prefs.get270NavBarPosition())) {
-                    leftPadding = navBarWidth;
-                }
+        final int navBarWidth = getNavigationBarWidth(resources);
+        final int orientation = getWindowManager().getDefaultDisplay().getRotation();
+
+        int leftPadding = 0;
+        int rightPadding = 0;
+        if (orientation == Surface.ROTATION_90) {
+            if ("right".equals(prefs.get90NavBarPosition())) {
+                rightPadding = navBarWidth;
+            } else if ("left".equals(prefs.get90NavBarPosition())) {
+                leftPadding = navBarWidth;
             }
-
-            // when the actionBar is on the bottom and the keyboard comes up and moves the input
-            // field up, the input field needs extra padding on the bottom so that the keyboards
-            // does not overlay with the actionBar
-            final TextView userSearchInput = findViewById(R.id.user_search_input);
-            final float padding = (actionbar_height-userSearchInput.getTextSize());
-            userSearchInput.setPadding(0,(int)(padding*0.55),0,(int)(padding*0.45));
-
-            // If the navigation bar is on the side, don't put apps under it.
-            // If the navigation bar is at the bottom, stop the icons above it.
-            masterLayout.setPadding(leftPadding, 0, rightPadding, 0);
-
-            // Top and bottom margin is set. Only one will be needed, depending on the searchbar
-            // being on top or bottom. But the other one does no harm.
-            int actionbar_top_margin = status_bar_height + actionbar_margin;
-            int actionbar_bottom_margin = navBarHeight+actionbar_margin;
-            actionBarParams.setMargins(0,actionbar_top_margin, 0,actionbar_bottom_margin);
-
-            // setting the padding on the apps view so that the apps are not under the status bars,
-            // the navigation bar or the search bar.
-            int app_top = actionbar_top_margin + actionbar_height + actionbar_margin*3;
-            int app_bottom = navBarHeight;
-            if (on_bottom) {
-                app_top = actionbar_top_margin;
-                app_bottom =  actionbar_bottom_margin + actionbar_height + actionbar_margin*1;
+        } else if (orientation == Surface.ROTATION_270) {
+            if ("right".equals(prefs.get270NavBarPosition())) {
+                rightPadding = navBarWidth;
+            } else if ("left".equals(prefs.get270NavBarPosition())) {
+                leftPadding = navBarWidth;
             }
-            appContainer.setPadding(0, app_top, 0, app_bottom);
         }
+
+        // when the actionBar is on the bottom and the keyboard comes up and moves the input
+        // field up, the input field needs extra padding on the bottom so that the keyboards
+        // does not overlay with the actionBar
+        final TextView userSearchInput = findViewById(R.id.user_search_input);
+        final float padding = (actionbar_height-userSearchInput.getTextSize());
+        userSearchInput.setPadding(0,(int)(padding*0.55),0,(int)(padding*0.45));
+
+        // If the navigation bar is on the side, don't put apps under it.
+        // If the navigation bar is at the bottom, stop the icons above it.
+        masterLayout.setPadding(leftPadding, 0, rightPadding, 0);
+
+        // Top and bottom margin is set. Only one will be needed, depending on the searchbar
+        // being on top or bottom. But the other one does no harm.
+        int actionbar_top_margin = status_bar_height + actionbar_margin;
+        int actionbar_bottom_margin = navBarHeight+actionbar_margin;
+        actionBarParams.setMargins(0,actionbar_top_margin, 0,actionbar_bottom_margin);
+
+        // setting the padding on the apps view so that the apps are not under the status bars,
+        // the navigation bar or the search bar.
+        int app_top = actionbar_top_margin + actionbar_height + actionbar_margin*3;
+        int app_bottom = navBarHeight;
+        if (on_bottom) {
+            app_top = actionbar_top_margin;
+            app_bottom =  actionbar_bottom_margin + actionbar_height + actionbar_margin;
+        }
+        appContainer.setPadding(0, app_top, 0, app_bottom);
     }
 
     private void setupPreferences() {
